@@ -1,47 +1,6 @@
 class AoC():
     def __init__(self):
-        self.calibration_doc =  open('calibration_doc.txt', 'r').readlines()
-        self.calibration_number_lookup = {
-        "one":"o1e",
-        "two":"t2o",
-        "three":"t3e",
-        "four":"f4r",
-        "five":"f5e",
-        "six":"s6x",
-        "seven":"s7n",
-        "eight":"e8t",
-        "nine":"n9e"
-    }
-        self.games = open('games.txt', 'r').readlines()
-        self.schematic = open('schematic.txt', 'r').readlines()
-    
-    def getTotalFromCalibration(self, file_info):
-        total_sum = 0
-        for item in file_info:
-            value = (''.join(char for char in item if char.isnumeric()))
-            total_sum += int(value[0]+value[-1])
-        return total_sum
-
-    def parseCubeGame(self, game):
-        sets = game.split(":")[1].split(";")
-        parsed = []
-        for pull in sets:
-            seperated_pull = pull.strip().split(',')
-            set_dict = {}
-            for color_amount in seperated_pull:
-                color_amount_arr = color_amount.strip().split(" ")
-                color = color_amount_arr[1]
-                amount = color_amount_arr[0]
-                set_dict[color] = int(amount)
-            parsed.append(set_dict.copy())
-            set_dict.clear()
-        return parsed
-    
-    def validate_game(self, game):
-        for pull in game:
-            if pull.get('blue', 0) > 14 or pull.get('green', 0) > 13 or pull.get('red', 0) > 12:
-                return False
-        return True
+        self.schematic = open('files/schematic.txt', 'r').readlines()
 
     def in_schematic_bounds(self, i, j):
         max_rows = len(self.schematic)
@@ -83,45 +42,6 @@ class AoC():
                 j += 1
             end = j
             return (start, end)
-
-    def dayOnePartOne(self):
-        print(self.getTotalFromCalibration(self.calibration_doc))
-    
-    def dayOnePartTwo(self):
-        new = []
-        for item in self.calibration_doc:
-            for key in self.calibration_number_lookup.keys():
-                if key in item:
-                    item = item.replace(key, self.calibration_number_lookup[key])
-            new.append(item)
-        self.calibration_doc = new
-        print(self.getTotalFromCalibration(self.calibration_doc))
-
-    def dayTwoPartOne(self):
-        valid_game_ids = set()
-        for (i, game) in enumerate(self.games):
-            game = self.parseCubeGame(game)
-            if self.validate_game(game):
-                valid_game_ids.add(i+1)
-        print(sum(list(valid_game_ids)))
-    
-    def dayTwoPartTwo(self):
-        total_sum = 0
-        for game in self.games:
-            game = self.parseCubeGame(game)
-            max_blue = 0
-            max_green = 0
-            max_red = 0
-            for pull in game:
-                if 'blue' in pull:
-                    max_blue = max(max_blue, pull['blue'])
-                if 'green' in pull:
-                    max_green = max(max_green, pull['green'])
-                if 'red' in pull:
-                    max_red = max(max_red, pull['red'])
-            power = max_blue * max_green * max_red
-            total_sum += power
-        print(total_sum)
 
     def dayThreePartOne(self):
         seen = set()
@@ -220,12 +140,10 @@ class AoC():
 
 if __name__ == '__main__':
     advent = AoC()
-    advent.dayOnePartOne()
-    advent.dayOnePartTwo()
-    advent.dayTwoPartOne()
-    advent.dayTwoPartTwo()
     advent.dayThreePartOne()
     advent.dayThreePartTwo()
+
+    
 
 
 
